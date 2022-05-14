@@ -1,6 +1,6 @@
 import express from "express";
 import serialize from "../functions/serialize.js";
-import AuthController from "../controllers/auth.js";
+import AuthController from "../controllers/Auth.js";
 const router = express.Router();
 
 /** Fetch all users */
