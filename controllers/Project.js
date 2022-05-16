@@ -2,14 +2,12 @@ import User from "../model/users.js";
 import passport from "passport";
 import Projects from "../model/projects.js";
 
-/** Creat Admin Project Controller */
+/** Create Project Controller */
 
-const CreateAdminProjects = async (req, res) => {
+const createProject = async (req, res) => {
   try {
-    let role = ["user", "admin", "superAdmin"];
     new Projects({
       ...req.body,
-      role: role[1],
     })
       .save()
       .then((project) => {
@@ -25,11 +23,10 @@ const CreateAdminProjects = async (req, res) => {
     res.status(401).send({ message: "Cannot Create Project" });
   }
 };
-/** Get Admin Projects Controllers */
+/** Get All Projects Controllers */
 
-const adminProjects = async (req, res) => {
+const allProjects = async (req, res) => {
   try {
-    // let role = ["user", "admin", "superAdmin"];
     Projects.find({})
       .then((projects) => {
         res.send({
@@ -45,9 +42,9 @@ const adminProjects = async (req, res) => {
   }
 };
 
-/** Get a Single Admin Project Controllers */
+/** Get A Single Project Controllers */
 
-const adminProject = async (req, res) => {
+const singleProject = async (req, res) => {
   try {
     await Projects.findById({ _id: req.params.id }).then((proj) => {
       console.log(proj);
@@ -70,9 +67,9 @@ const adminProject = async (req, res) => {
   }
 };
 
-/** Update Admin Project Controllers */
+/** Update A Single Project Controllers */
 
-const updateAdminProjects = async (req, res) => {
+const updateProject = async (req, res) => {
   try {
     Projects.findByIdAndUpdate({ _id: req.params.id }, req.body)
       .then((updatedProject) => {
@@ -91,9 +88,9 @@ const updateAdminProjects = async (req, res) => {
   }
 };
 
-/** Delete Admin Projects Controller */
+/** Delete A Single Project Controller */
 
-const deleteAdminProjects = async (req, res) => {
+const deleteProject = async (req, res) => {
   try {
     await Projects.findById({ _id: req.params.id })
       .then((proj) => {
@@ -122,19 +119,11 @@ const deleteAdminProjects = async (req, res) => {
 /** User Authenticated Profile*/
 const userAuthentication = passport.authenticate("jwt", { session: false });
 
-/** Check Roles */
-const checkRoles = (roles) => (req, res, next) => {
-  roles.includes(req.user.role)
-    ? next()
-    : res.status(401).json({ message: "Access to this resource is forbidden" });
-};
-
 export default {
   userAuthentication,
-  checkRoles,
-  CreateAdminProjects,
-  adminProjects,
-  adminProject,
-  updateAdminProjects,
-  deleteAdminProjects,
+  createProject,
+  allProjects,
+  singleProject,
+  updateProject,
+  deleteProject,
 };

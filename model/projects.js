@@ -8,7 +8,6 @@ const projectSchema = new mongoose.Schema(
     },
     user_id: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-      // required: true,
     },
     photo: {
       type: Date,
