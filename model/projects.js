@@ -10,7 +10,7 @@ const projectSchema = new mongoose.Schema(
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     },
     photo: {
-      type: Date,
+      type: String,
       default: Date,
     },
     images: {
