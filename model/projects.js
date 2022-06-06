@@ -29,6 +29,14 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    link: {
+      type: String,
+      required: true,
+    },
+    github: {
+      type: String,
+      default: "https://github.com/Kizito25/",
+    },
   },
   { timestamps: true }
 );
