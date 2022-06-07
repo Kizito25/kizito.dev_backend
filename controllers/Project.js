@@ -46,9 +46,6 @@ const allProjects = async (req, res) => {
 
 const singleProject = async (req, res) => {
   try {
-    if (req.params.id.length !== 24) {
-      res.status(401).send({ message: "Invalid project ID" });
-    }
     await Projects.findById({ _id: req.params.id })
       .populate("user_id")
       .then((project) => {
@@ -64,8 +61,7 @@ const singleProject = async (req, res) => {
         });
       })
       .catch((error) => {
-        console.log(error);
-        res.status(401).send({ message: error.message });
+        return res.status(401).send({ message: "Invalid Request ID" });
       });
   } catch (e) {
     res.status(401).send({ message: "Cannot fetch projects" });
