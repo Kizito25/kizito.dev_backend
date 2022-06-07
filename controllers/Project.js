@@ -46,24 +46,27 @@ const allProjects = async (req, res) => {
 
 const singleProject = async (req, res) => {
   try {
-    await Projects.findById({ _id: req.params.id }).then((proj) => {
-      console.log(proj);
-      if (proj === null) {
-        return res.status(404).send({ message: "Project not found" });
-      }
-      Projects.find({ _id: req.params.id })
-        .populate("user_id")
-
-        .then((project) => {
-          res.send({
-            project,
-            message: "Projects fetched successfully",
+    if (req.params.id.length !== 24) {
+      res.status(401).send({ message: "Invalid project ID" });
+    }
+    await Projects.findById({ _id: req.params.id })
+      .populate("user_id")
+      .then((project) => {
+        if (!project) {
+          return res.send({
+            message: "Project not found",
           });
-        })
-        .catch((error) => {
-          res.status(401).send({ message: error.message });
+        }
+
+        res.send({
+          project,
+          message: "Projects fetched successfully",
         });
-    });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(401).send({ message: error.message });
+      });
   } catch (e) {
     res.status(401).send({ message: "Cannot fetch projects" });
   }
