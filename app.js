@@ -6,6 +6,7 @@ import passportConfig from "./middlewares/passport.js";
 import userRoute from "./routes/user.js";
 import authRoute from "./routes/auth.js";
 import projectRoute from "./routes/project.js";
+import mailRoute from "./routes/mail.js";
 import mongooseConn from "./config/_config.js";
 import cors from "cors";
 
@@ -21,6 +22,7 @@ passportConfig(passport);
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users/", userRoute);
 app.use("/api/v1/projects/", projectRoute);
+app.use("/api/v1/mail/", mailRoute);
 
 /** Homepage Route */
 
