@@ -1,5 +1,7 @@
 import axios from "axios";
 import main from "../functions/mailer.js";
+import nodemailer from "nodemailer";
+import nodemailerSendgrid from "nodemailer-sendgrid";
 
 const SendMail = async (req, res, next) => {
   try {
@@ -12,25 +14,42 @@ const SendMail = async (req, res, next) => {
     let confirmRecaptcha = await axios.post(
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET}&response=${recaptcha}`
     );
-    if (confirmRecaptcha.data.success === true) {
-      await main(from, subject, message).catch(() => {
-        return res
-          .status(400)
-          .send({ message: "Message not Sent", status: "Failure" });
-      });
-      return res.status(200).send({
-        message: "Message Sent",
-        status: "Ok",
-      });
-    } else {
-      return res.status(400).send({
-        message: "Cannot verify you authenticity",
+    let transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      tls: {
+        ciphers: "SSLv3",
+      },
+    });
+
+    const sendMail = await transporter.sendMail({
+      from,
+      to: process.env.RECIPIENT_EMAIL,
+      subject,
+      html: message,
+    });
+    if (confirmRecaptcha.data.success !== true) {
+      sendMail.catch(() => {
+        throw new Error({ message: "Message not Sent", status: "Failure" });
       });
     }
-  } catch (e) {
+    if (confirmRecaptcha.data.success === true) {
+      sendMail.then((info) => {
+        return res.status(200).send({
+          message: "Message Sent",
+          status: "Ok",
+        });
+      });
+    }
+  } catch (error) {
     res.status(400).send({
-      message: e,
-      status: "Server Failure",
+      message: error.message,
+      status: error.status,
     });
   }
 };
