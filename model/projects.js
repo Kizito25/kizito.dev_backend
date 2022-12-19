@@ -11,13 +11,9 @@ const projectSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
-      default:
-        "https://res.cloudinary.com/kizito25/image/upload/v1651962045/noun-alzheimer-2686167_efnbop.svg",
     },
     mobile_photo: {
       type: String,
-      default:
-        "https://res.cloudinary.com/kizito25/image/upload/v1651962045/noun-alzheimer-2686167_efnbop.svg",
     },
     images: {
       type: [],
@@ -37,6 +33,12 @@ const projectSchema = new mongoose.Schema(
       type: String,
       default: "https://github.com/Kizito25/",
     },
+    stacks: {
+      type : [String]
+    },
+    platform: {
+      type : [String]
+    }
   },
   { timestamps: true }
 );

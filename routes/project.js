@@ -18,11 +18,17 @@ router.get("/", ProjectController.allProjects);
 router.get("/:id", ProjectController.singleProject);
 
 /** Update a single Project */
-router.put(
+router.patch(
   "/:id",
   ProjectController.userAuthentication,
   ProjectController.updateProject
 );
+// /** Update a single Project */
+// router.put(
+//   "/:id",
+//   ProjectController.userAuthentication,
+//   ProjectController.updateProject
+// );
 
 /** Delete a single Project */
 router.delete(

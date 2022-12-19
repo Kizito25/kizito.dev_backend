@@ -6,7 +6,7 @@ let SECRET_KEY = process.env.SECRET_KEY;
 
 /**  Register User Controller */
 
-const RegisterUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     if (username.length <= 3) {
@@ -67,22 +67,18 @@ const RegisterUser = async (req, res) => {
 
 const userLogin = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    /** check if user exists */
-    let user = await User.find({
-      $or: [{ username: username || email }, { email: email || username }],
-    })
-      .then((foundUser) => {
-        if (!foundUser) {
-          return res.status(404).send({ message: "User not found" });
-        }
-        return foundUser[0];
-      })
-      .catch((error) => {
-        return res.status(500).send({ message: error.message });
-      });
+    const { username, password } = req.body;
 
+    /** check if user exists */
+    // $or: [{ username: username }, { email: email || username }],
+    let user = await User.find({ username })
+
+    if (user.length === 0) {
+      throw new Error("Username is incorrect")
+    }
     /** Check if password is correct */
+    user = user[0];
+    console.log(user)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Password is incorrect" });
@@ -94,6 +90,7 @@ const userLogin = async (req, res) => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          image: user.profile_image
         },
         SECRET_KEY,
         { expiresIn: "7 days" }
@@ -106,6 +103,7 @@ const userLogin = async (req, res) => {
           lastName: user.lastName,
           username: user.username,
           email: user.email,
+          image: user.profile_image,
           expiresIn: "7 days",
         },
       };
@@ -120,6 +118,6 @@ const userLogin = async (req, res) => {
 };
 
 export default {
-  RegisterUser,
-  userLogin,
+  registerUser,
+  userLogin
 };

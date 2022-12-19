@@ -27,6 +27,9 @@ const userSchema = new mongoose.Schema(
       min: [6, "Must be at least 6 Characters"],
       max: [20, "Must not be more than 20 Characters"],
     },
+    profile_image: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

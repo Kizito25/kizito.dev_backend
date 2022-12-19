@@ -1,6 +1,8 @@
 import express from "express";
 import UserController from "../controllers/User.js";
+import multer from  'multer'
 const router = express.Router();
+const upload = multer()
 
 /** Fetch all users */
 
@@ -12,7 +14,7 @@ router.get("/:id", UserController.userAuthentication, UserController.getUser);
 /** Fetch a user and update */
 router.patch(
   "/:id",
-  UserController.userAuthentication,
+  UserController.userAuthentication, upload.single('avatar'),
   UserController.updateUser
 );
 

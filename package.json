@@ -6,24 +6,31 @@
   "type": "module",
   "scripts": {
     "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1277.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
+    "elementz": "^2.0.5",
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.10",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.7.5",
     "nodemailer-sendgrid": "^1.0.3",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
