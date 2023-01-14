@@ -1,6 +1,8 @@
 import express from "express";
 import UserController from "../controllers/User.js";
 import multer from  'multer'
+import {serialize } from '../functions/serialize.js'
+
 const router = express.Router();
 const upload = multer()
 
@@ -14,7 +16,7 @@ router.get("/:id", UserController.userAuthentication, UserController.getUser);
 /** Fetch a user and update */
 router.patch(
   "/:id",
-  UserController.userAuthentication, upload.single('avatar'),
+  UserController.userAuthentication, upload.single('image'),
   UserController.updateUser
 );
 
@@ -25,13 +27,15 @@ router.delete(
   UserController.deleteUser
 );
 
-/** User Protected Route */
-router.get("/profile", UserController.userAuthentication, async (req, res) => {
-  try {
-    return res.status(200).json({ user: serialize.serializeUser(req.user) });
-  } catch (e) {
-    return res.status(500).json({ message: e.message });
-  }
-});
+// /** User Protected Route */
+// router.get("/profile", UserController.userAuthentication, async (req, res) => {
+//   try {
+
+//     console.log(req)
+//      return res.status(200).json({ user: serialize.serializeUser() });
+//   } catch (e) {
+//     return res.status(500).json({ message: e.message });
+//   }
+// });
 
 export default router;

@@ -9,7 +9,6 @@ const hashText = (text) => {
 };
 // hashText("hex");
 
-let serialize = {};
 const serializeUser = (user) => {
   return {
     id: user._id,
@@ -19,9 +18,10 @@ const serializeUser = (user) => {
     email: user.email,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
+    avatar: user.profile_image
   };
 };
 
-export default serialize = {
+export const  serialize = {
   serializeUser,
 };

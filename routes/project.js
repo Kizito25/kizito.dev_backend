@@ -1,6 +1,9 @@
 import express from "express";
 import ProjectController from "../controllers/Project.js";
 const router = express.Router();
+import multer from "multer";
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 /** Create Project */
 
@@ -18,9 +21,15 @@ router.get("/", ProjectController.allProjects);
 router.get("/:id", ProjectController.singleProject);
 
 /** Update a single Project */
+const uploads = upload.fields([
+  { name: "photo", maxCount: 1 },
+  { name: "images", maxCount: 5 },
+  { name: "mobile_photo", maxCount: 1 },
+]);
 router.patch(
   "/:id",
   ProjectController.userAuthentication,
+  uploads,
   ProjectController.updateProject
 );
 // /** Update a single Project */

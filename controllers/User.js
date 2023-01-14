@@ -1,7 +1,7 @@
 import User from "../model/users.js";
 import passport from "passport";
 import AWS from 'aws-sdk'
-
+import { serialize } from '../functions/serialize.js';
 let accessKeyId = process.env.S3ACCESSKEYID
 let secretAccessKey = process.env.S3SECRETACCESSKEY
 let s3Bucket = process.env.S3BUCKET
@@ -25,7 +25,10 @@ const getUser = async (req, res) => {
     if (!user) {
       res.status(404).send({ message: "No user found" });
     }
-    res.status(200).send({ user });
+    let serializedUser = serialize.serializeUser(user[0])
+    // console.log(serializedUser)
+    // console.log(user)
+    res.status(200).send({ serializedUser });
   } catch (e) {
     res.status(500).send({ message: e.message });
   }
@@ -36,6 +39,7 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     if (req.file) {
+      // console.log(req.file)
       AWS.config.update({
         region: 'us-east-2'
       })
@@ -50,7 +54,7 @@ const updateUser = async (req, res) => {
 
       let uploadParams = {
         Bucket: s3Bucket,
-        Key: Date.now() + originalname,
+        Key: Date.now() + "-" + originalname,
         Body: Buffer.from(buffer),
         ContentType: mimetype,
         ACL: 'public-read'
@@ -66,7 +70,7 @@ const updateUser = async (req, res) => {
           if (!updatedUser) {
             throw new Error("Could not update user details")
           }
-          res.status(200).send({ message: "Updated was updated successfully" });
+         return res.status(200).send({ message: "Updated was updated successfully" });
         }
       })
     } else {
