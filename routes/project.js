@@ -32,7 +32,7 @@ router.patch(
   uploads,
   ProjectController.updateProject
 );
-// /** Update a single Project */
+// /** Update single Projects */
 // router.put(
 //   "/:id",
 //   ProjectController.userAuthentication,
