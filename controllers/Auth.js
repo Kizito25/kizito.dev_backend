@@ -72,15 +72,14 @@ const userLogin = async (req, res) => {
     /** check if user exists */
     // $or: [{ username: username }, { email: email || username }],
 
-    let user = await User.find({username})
+    let user = await User.find({ username });
 
     if (user.length === 0) {
-      throw new Error("Username is incorrect")
+      throw new Error("Username is incorrect");
     }
     /** Check if password is correct */
     user = user[0];
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(user)
     if (!isMatch) {
       return res.status(401).json({ message: "Password is incorrect" });
     } else {
@@ -91,9 +90,9 @@ const userLogin = async (req, res) => {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          image: user.profile_image,
         },
-        SECRET_KEY,
-        { expiresIn: "7 days" }
+        SECRET_KEY
       );
       const result = {
         token: `Bearer ${token}`,
@@ -104,11 +103,10 @@ const userLogin = async (req, res) => {
           username: user.username,
           email: user.email,
           display_picture: user.profile_image,
-          expiresIn: "7 days",
         },
       };
       return res.status(200).send({
-        result,
+        authData: result,
         message: "Login Successful",
       });
     }
@@ -119,5 +117,5 @@ const userLogin = async (req, res) => {
 
 export default {
   registerUser,
-  userLogin
+  userLogin,
 };

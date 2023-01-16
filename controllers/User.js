@@ -1,10 +1,10 @@
 import User from "../model/users.js";
 import passport from "passport";
-import AWS from 'aws-sdk'
-import { serialize } from '../functions/serialize.js';
-let accessKeyId = process.env.S3ACCESSKEYID
-let secretAccessKey = process.env.S3SECRETACCESSKEY
-let s3Bucket = process.env.S3BUCKET
+import AWS from "aws-sdk";
+import { serialize } from "../functions/serialize.js";
+let accessKeyId = process.env.S3ACCESSKEYID;
+let secretAccessKey = process.env.S3SECRETACCESSKEY;
+let s3Bucket = process.env.S3BUCKET;
 
 /** Get All Users */
 
@@ -25,9 +25,7 @@ const getUser = async (req, res) => {
     if (!user) {
       res.status(404).send({ message: "No user found" });
     }
-    let serializedUser = serialize.serializeUser(user[0])
-    // console.log(serializedUser)
-    // console.log(user)
+    let serializedUser = serialize.serializeUser(user[0]);
     res.status(200).send({ serializedUser });
   } catch (e) {
     res.status(500).send({ message: e.message });
@@ -39,51 +37,70 @@ const getUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     if (req.file) {
-      // console.log(req.file)
       AWS.config.update({
-        region: 'us-east-2'
-      })
+        region: "us-east-2",
+      });
 
       let s3 = new AWS.S3({
         credentials: {
           accessKeyId: accessKeyId,
-          secretAccessKey: secretAccessKey
-        }
-      })
-      let { originalname, mimetype, buffer } = req.file
+          secretAccessKey: secretAccessKey,
+        },
+      });
+      let { originalname, mimetype, buffer } = req.file;
 
       let uploadParams = {
         Bucket: s3Bucket,
         Key: Date.now() + "-" + originalname,
         Body: Buffer.from(buffer),
         ContentType: mimetype,
-        ACL: 'public-read'
-      }
+        ACL: "public-read",
+      };
       await s3.upload(uploadParams, async function (err, data) {
         if (err) {
-          throw new Error(err)
+          throw new Error(err);
         }
         if (data) {
-          let { username, firstName, lastName, email } = req.body
-          let updated = { username, firstName, lastName, email, profile_image: data.Location }
-          let updatedUser = await User.findByIdAndUpdate({ _id: req.params.id }, updated)
+          let { username, firstName, lastName, email } = req.body;
+          let updated = {
+            username,
+            firstName,
+            lastName,
+            email,
+            profile_image: data.Location,
+          };
+          let updatedUser = await User.findByIdAndUpdate(
+            { _id: req.params.id },
+            updated
+          );
           if (!updatedUser) {
-            throw new Error("Could not update user details")
+            throw new Error("Could not update user details");
           }
-         return res.status(200).send({ message: "Updated was updated successfully" });
+          let serializedUser = serialize.serializeUser(updatedUser);
+          return res.status(200).send({
+            message: "Updated was updated successfully",
+            user: serializedUser,
+          });
         }
-      })
+      });
     } else {
-      let updatedUser = await User.findByIdAndUpdate({ _id: req.params.id }, req.body)
+      let updatedUser = await User.findByIdAndUpdate(
+        { _id: req.params.id },
+        req.body
+      );
       if (!updatedUser) {
-        throw new Error("Could not update user details")
+        throw new Error("Could not update user details");
       }
-      res.status(200).send({ message: "Updated was updated successfully" });
+      let serializedUser = serialize.serializeUser(updatedUser);
+      res
+        .status(200)
+        .send({
+          message: "Updated was updated successfully",
+          user: serializedUser,
+        });
     }
-
   } catch (e) {
     res.status(500).send({ message: e.message });
-
   }
 };
 
