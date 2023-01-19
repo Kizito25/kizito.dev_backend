@@ -44,7 +44,7 @@ const createProject = async (req, res) => {
 
 const allProjects = async (req, res) => {
   try {
-    Projects.find({})
+    Projects.find()
       .then((projects) => {
         res.send({
           projects,
@@ -94,7 +94,7 @@ const updateProject = async (req, res) => {
         req.body
       );
       if (project) {
-        console.log(project);
+        // console.log(project);
         return res.send({
           message: "Project updated successfully",
         });

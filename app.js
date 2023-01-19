@@ -6,6 +6,9 @@ import passportConfig from "./middlewares/passport.js";
 import userRoute from "./routes/user.js";
 import authRoute from "./routes/auth.js";
 import projectRoute from "./routes/project.js";
+import analyticsRoute from "./routes/analytics.js";
+import blogsRoute from "./routes/blogs.js";
+import resetPasswordRoute from "./routes/resetPassword.js";
 import mailRoute from "./routes/mail.js";
 import mongooseConn from "./config/_config.js";
 import cors from "cors";
@@ -14,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
 
 app.use(cors());
@@ -25,6 +28,9 @@ app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/users/", userRoute);
 app.use("/api/v1/projects/", projectRoute);
 app.use("/api/v1/mail/", mailRoute);
+app.use("/api/v1/analytics/", analyticsRoute);
+app.use("/api/v1/blogs/", blogsRoute);
+app.use("/api/v1/reset-pass/", resetPasswordRoute);
 
 /** Homepage Route */
 
