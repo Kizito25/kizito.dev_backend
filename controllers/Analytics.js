@@ -47,11 +47,10 @@ async function runReport(req, res) {
 
     console.log("Report result:", response);
     response.rows.forEach((row) => {
-      console.log(row);
-      //   res.send({
-      //     dimension: row.dimensionValues[0],
-      //     metric: row.metricValues[0],
-      //   });
+      res.send({
+        dimension: row.dimensionValues[0],
+        metric: row.metricValues[0],
+      });
     });
   } catch (error) {
     return res.status(404).send({ message: error.message });

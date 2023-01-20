@@ -1,4 +1,3 @@
-import User from "../model/users.js";
 import passport from "passport";
 import Projects from "../model/projects.js";
 import AWS from "aws-sdk";
