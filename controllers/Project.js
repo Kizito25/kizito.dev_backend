@@ -87,13 +87,18 @@ const singleProject = async (req, res) => {
 
 const updateProject = async (req, res) => {
   try {
+    if (
+      Object.entries(req.body).length === 0 &&
+      Object.entries(req.files).length === 0
+    ) {
+      throw new Error("Form Cannot be Empty");
+    }
     if (Object.entries(req.files).length === 0) {
       let project = await Projects.findByIdAndUpdate(
         { _id: req.params.id },
         req.body
       );
       if (project) {
-        // console.log(project);
         return res.send({
           message: "Project updated successfully",
         });
