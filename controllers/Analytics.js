@@ -29,13 +29,13 @@ async function runReport(req, res) {
       property: `properties/${propertyId}`,
       dateRanges: [
         {
-          startDate: `7daysAgo`, //👈  e.g. "7daysAgo" or "30daysAgo"
+          startDate: `30daysAgo`, //👈  e.g. "7daysAgo" or "30daysAgo"
           endDate: "today",
         },
       ],
       dimensions: [
         {
-          name: "year", // data will be year wise
+          name: "day", // data will be year wise
         },
       ],
       metrics: [
@@ -45,13 +45,7 @@ async function runReport(req, res) {
       ],
     });
 
-    console.log("Report result:", response);
-    response.rows.forEach((row) => {
-      res.send({
-        dimension: row.dimensionValues[0],
-        metric: row.metricValues[0],
-      });
-    });
+    res.status(200).send(response);
   } catch (error) {
     return res.status(404).send({ message: error.message });
   }
