@@ -130,12 +130,18 @@ const updateProject = async (req, res) => {
           await s3.upload(mobile_photo_params, async (err, data) => {
             if (err) {
               throw new Error("Error: ", err);
-            } else {
-              const mobilePhoto = data.Location;
-              await Projects.findByIdAndUpdate(
-                { _id: req.params.id },
-                { mobile_photo: mobilePhoto }
-              );
+            }
+
+            if (data === null) {
+              throw new Error("No Data Returned from s3");
+            }
+            const mobilePhoto = data.Location;
+            let project = await Projects.findByIdAndUpdate(
+              { _id: req.params.id },
+              { mobile_photo: mobilePhoto }
+            );
+            if (!project) {
+              throw new Error("Project not found");
             }
           });
         }
@@ -158,18 +164,24 @@ const updateProject = async (req, res) => {
           await s3.upload(photo_params, async (err, data) => {
             if (err) {
               throw new Error("Error: ", err);
-            } else {
-              const desktopPhoto = data.Location;
-              await Projects.findByIdAndUpdate(
-                { _id: req.params.id },
-                { photo: desktopPhoto }
-              );
+            }
+            if (data === null) {
+              throw new Error("No Data Returned from s3");
+            }
+            const desktopPhoto = data.Location;
+            let project = await Projects.findByIdAndUpdate(
+              { _id: req.params.id },
+              { photo: desktopPhoto }
+            );
+            if (!project) {
+              throw new Error("Project not found");
             }
           });
         }
+
         // upload multiple images in image2 field to S3 and get their S3 links
         if (images) {
-          await images.forEach((image) => {
+          await images.forEach(async (image) => {
             let imageParams = {
               Bucket: s3Bucket,
               Key: uniqueSuffix + image.originalname,
@@ -177,15 +189,25 @@ const updateProject = async (req, res) => {
               ContentType: image.mimetype,
               ACL: "public-read",
             };
-            s3.upload(imageParams, async (err, data) => {
+
+            await s3.upload(imageParams, async (err, data) => {
               if (err) {
                 throw new Error("Error: ", err);
-              } else {
-                const imageLinks = data.Location;
-                await Projects.findByIdAndUpdate(
-                  { _id: req.params.id },
-                  { images: imageLinks }
-                );
+              }
+
+              if (data === null) {
+                throw new Error("No data returned from s3");
+              }
+              const imageLinks = await data.Location;
+
+              let project = await Projects.findOneAndUpdate(
+                { _id: req.params.id },
+                {
+                  $push: { images: imageLinks },
+                }
+              );
+              if (!project) {
+                throw new Error("Project not found");
               }
             });
           });

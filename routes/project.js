@@ -32,12 +32,6 @@ router.patch(
   uploads,
   ProjectController.updateProject
 );
-// /** Update a single Project */
-// router.put(
-//   "/:id",
-//   ProjectController.userAuthentication,
-//   ProjectController.updateProject
-// );
 
 /** Delete a single Project */
 router.delete(
