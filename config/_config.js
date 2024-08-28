@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 
 const url = process.env.MONGO_URL;
+mongoose.set("strictQuery", true);
 const mongooseConn = mongoose
   .connect(url, {
     useNewUrlParser: true,
